@@ -1,6 +1,9 @@
 ## 目的
 自動通知 car 新文
 
+#### updated 20220913
+notify 使用 line 比較即使
+
 - fetch
     - source: 
         取得 ptt CarShop 版的**售車**標題網頁
@@ -41,7 +44,8 @@
         先使用 `linux crontab` 相對單純不需要再裝 package。
 - notify
     - mail or line notify
-        mail builtin `smtplib` 應該比較容易，line notify 需要花點時間研究 line developer，先選 mail。
+        ~~mail builtin `smtplib` 應該比較容易，line notify 需要花點時間研究 line developer，先選 mail。~~
+        use line notify
 - deploy
     - build docker image
     - run on ec2 
