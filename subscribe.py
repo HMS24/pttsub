@@ -1,3 +1,8 @@
+"""訂閱 ptt CarShop 最新售車文
+每半小時跑一次
+若有新文則使用 line 發送通知
+"""
+
 import os
 from functools import reduce
 
