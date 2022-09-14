@@ -134,6 +134,7 @@ def main():
 
     # 判斷是否有新發文
     if latest_id == last_id:
+        print(f"***** it seems that doesn't have new articles *****")
         return
 
     save(latest_info)
