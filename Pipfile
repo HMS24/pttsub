@@ -8,7 +8,6 @@ requests-html = "*"
 python-dotenv = "*"
 
 [dev-packages]
-ipykernel = "*"
 
 [requires]
 python_version = "3.8"
