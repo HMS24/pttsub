@@ -22,20 +22,29 @@ TOKEN = os.getenv("TOKEN")
 def get_last_id():
     """從 cache.txt 取得上次賣車文的 id"""
 
-    with open("cache.txt", "r", encoding="utf-8") as f:
-        previous = f.read()
+    try:
+        with open("cache.txt", "r", encoding="utf-8") as f:
+            previous = f.read()
 
-        # M.1663077961.A.6CD,標題,網址
-        last_id, _, _ = previous.partition(",")
-    return last_id
+            # M.1663077961.A.6CD,標題,網址
+            last_id, _, _ = previous.partition(",")
+    except FileNotFoundError:
+        open("cache.txt", "w", encoding="utf-8").close()
+
+        last_id = None
+
+    return last_id or None
 
 
 def get_index_by_id(id, trade_list):
     """根據 id 在新抓下的 list 找 index 以便 slice 出最新的發文"""
 
-    [latest_trade_index] = [index
-                            for index, info in enumerate(trade_list)
-                            if info[0] == id]
+    try:
+        [latest_trade_index] = [index
+                                for index, info in enumerate(trade_list)
+                                if info[0] == id]
+    except ValueError:
+        latest_trade_index = len(trade_list)
 
     return latest_trade_index
 
