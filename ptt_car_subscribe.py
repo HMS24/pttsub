@@ -1,4 +1,6 @@
 import os
+from functools import reduce
+
 from dotenv import load_dotenv
 from requests_html import HTMLSession
 
@@ -7,6 +9,41 @@ session = HTMLSession()
 
 BASE_URL = "https://www.ptt.cc"
 TOKEN = os.getenv("TOKEN")
+
+
+def get_last_identifier():
+    """從 cache.txt 取得上次賣車文的 id"""
+    with open("cache.txt", "r", encoding="utf-8") as f:
+        previous = f.read()
+
+        # M.1663077961.A.6CD,標題,網址
+        last_identifier, _, _ = previous.partition(",")
+    return last_identifier
+
+
+def get_latest_index_by_identifier(identifier, trade_list):
+    """根據 id 在新抓下的 list 找 index 以便 slice 出最新的發文"""
+
+    [latest_trade_index] = [index
+                            for index, info in enumerate(trade_list)
+                            if info[0] == identifier]
+
+    return latest_trade_index
+
+
+def generate_notify_message(input_list):
+    """產生 line 訊息"""
+
+    message_list = list(map(
+        lambda values: f"\n{values[1]}\n{values[2]}\n",
+        input_list,
+    ))
+
+    return reduce(
+        lambda accu, curr: accu+curr,
+        message_list,
+        "",
+    )
 
 
 def fetch_by_page(page):
@@ -19,7 +56,7 @@ def fetch_by_page(page):
 
 
 def parse(html):
-    """解析出賣車標題的列表含該文網址"""
+    """解析出欲賣車的 list 包含標題、文章 id 及該文網址"""
 
     results = []
     for div_element in html.find(".r-list-container .r-ent"):
@@ -43,25 +80,9 @@ def parse(html):
     return results
 
 
-def get_last_identifier():
-    with open("cache.txt", "r", encoding="utf-8") as f:
-        previous = f.read()
-
-        # M.1663077961.A.6CD,標題,網址
-        last_identifier, _, _ = previous.partition(",")
-    return last_identifier
-
-
-def get_latest_index_by_identifier(identifier, trade_list):
-    [latest_trade_index] = [index
-                            for index, info in enumerate(trade_list)
-                            if info[0] == identifier]
-
-    return latest_trade_index
-
-
 def save(trade_info):
-    """儲存最新賣車的文"""
+    """儲存最新賣車的訊息"""
+
     with open("cache.txt", "w", encoding="utf-8") as f:
         identifier, title, url = trade_info
         f.write(f"{identifier},{title},{url}")
@@ -69,6 +90,7 @@ def save(trade_info):
 
 def notify(message):
     """line notify 通知"""
+
     headers = {
         "Authorization": "Bearer " + TOKEN,
         "Content-Type": "application/x-www-form-urlencoded",
@@ -82,6 +104,8 @@ def notify(message):
 
 
 def main():
+    """執行"""
+
     html = fetch_by_page(1)
     trade_list = parse(html)
 
@@ -99,10 +123,8 @@ def main():
         trade_list,
     )
 
-    new_trades = trade_list[:latest_index]
-
-    # todo: replace message
-    resp = notify("Hello world")
+    message = generate_notify_message(trade_list[:latest_index])
+    resp = notify(message)
 
     if resp.status_code != 200:
         print(f"***** Notify failed *****")

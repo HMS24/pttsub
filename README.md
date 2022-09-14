@@ -46,6 +46,7 @@ notify 使用 line 比較即使
     - mail or line notify
         ~~mail builtin `smtplib` 應該比較容易，line notify 需要花點時間研究 line developer，先選 mail。~~
         use line notify
+        `resp.headers["X-RateLimit-Remaining"] 看剩下的 limit count, default 1000 per hour`
 - deploy
     - build docker image
     - run on ec2 
