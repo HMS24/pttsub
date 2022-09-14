@@ -17,19 +17,20 @@ session = HTMLSession()
 
 BASE_URL = "https://www.ptt.cc"
 TOKEN = os.getenv("TOKEN")
+CACHE_TXT = "cache.txt"
 
 
 def get_last_id():
     """從 cache.txt 取得上次賣車文的 id"""
 
     try:
-        with open("cache.txt", "r", encoding="utf-8") as f:
+        with open(CACHE_TXT, "r", encoding="utf-8") as f:
             previous = f.read()
 
             # M.1663077961.A.6CD,標題,網址
             last_id, _, _ = previous.partition(",")
     except FileNotFoundError:
-        open("cache.txt", "w", encoding="utf-8").close()
+        open(CACHE_TXT, "w", encoding="utf-8").close()
 
         last_id = None
 
@@ -101,7 +102,7 @@ def parse(html):
 def save(trade_info):
     """儲存最新賣車的訊息"""
 
-    with open("cache.txt", "w", encoding="utf-8") as f:
+    with open(CACHE_TXT, "w", encoding="utf-8") as f:
         id, title, url = trade_info
         f.write(f"{id},{title},{url}")
 
