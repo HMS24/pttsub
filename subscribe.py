@@ -1,6 +1,9 @@
 """訂閱 ptt CarShop 最新售車文
 每半小時跑一次
 若有新文則使用 line 發送通知
+
+備註:
+id example: M.1663077961.A.6CD
 """
 
 import os
@@ -16,22 +19,23 @@ BASE_URL = "https://www.ptt.cc"
 TOKEN = os.getenv("TOKEN")
 
 
-def get_last_identifier():
+def get_last_id():
     """從 cache.txt 取得上次賣車文的 id"""
+
     with open("cache.txt", "r", encoding="utf-8") as f:
         previous = f.read()
 
         # M.1663077961.A.6CD,標題,網址
-        last_identifier, _, _ = previous.partition(",")
-    return last_identifier
+        last_id, _, _ = previous.partition(",")
+    return last_id
 
 
-def get_latest_index_by_identifier(identifier, trade_list):
+def get_index_by_id(id, trade_list):
     """根據 id 在新抓下的 list 找 index 以便 slice 出最新的發文"""
 
     [latest_trade_index] = [index
                             for index, info in enumerate(trade_list)
-                            if info[0] == identifier]
+                            if info[0] == id]
 
     return latest_trade_index
 
@@ -52,7 +56,7 @@ def generate_notify_message(input_list):
 
 
 def fetch_by_page(page):
-    """取得 ptt CarShop 第{page}頁的 html"""
+    """取得 ptt CarShop 包含售車標題第{page}頁的 html"""
 
     return session.get(
         url=f"{BASE_URL}/bbs/CarShop/search",
@@ -70,14 +74,14 @@ def parse(html):
         # href: /bbs/CarShop/M.1663082214.A.EB0.html
         href = anchor_element.attr("href")
 
-        # identifier: M.1663082214.A.EB0
-        identifier = href.rpartition("/")[-1].rpartition(".")[0]
+        # id: M.1663082214.A.EB0
+        id = href.rpartition("/")[-1].rpartition(".")[0]
 
         title = anchor_element.text()
         article_absolute_url = f"{BASE_URL}{href}"
 
         results.append((
-            identifier,
+            id,
             title,
             article_absolute_url,
         ))
@@ -89,8 +93,8 @@ def save(trade_info):
     """儲存最新賣車的訊息"""
 
     with open("cache.txt", "w", encoding="utf-8") as f:
-        identifier, title, url = trade_info
-        f.write(f"{identifier},{title},{url}")
+        id, title, url = trade_info
+        f.write(f"{id},{title},{url}")
 
 
 def notify(message):
@@ -115,20 +119,22 @@ def main():
     trade_list = parse(html)
 
     latest_info = trade_list[0]
-    latest_identifier = latest_info[0]
-    last_identifier = get_last_identifier()
+    latest_id = latest_info[0]
+    last_id = get_last_id()
 
-    if latest_identifier == last_identifier:
+    # 判斷是否有新發文
+    if latest_id == last_id:
         return
 
     save(latest_info)
 
-    latest_index = get_latest_index_by_identifier(
-        last_identifier,
+    # 因為有最新發文，找到上一次紀錄的 index，切割出新舊
+    last_trade_index = get_index_by_id(
+        last_id,
         trade_list,
     )
 
-    message = generate_notify_message(trade_list[:latest_index])
+    message = generate_notify_message(trade_list[:last_trade_index])
     resp = notify(message)
 
     if resp.status_code != 200:
