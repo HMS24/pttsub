@@ -102,11 +102,9 @@ def parse(html):
 def save(trade_info):
     """儲存最新賣車的訊息"""
 
-    print("----- save start")
     with open(CACHE_TXT_PATH, "w", encoding="utf-8") as f:
         id, title, url = trade_info
         f.write(f"{id},{title},{url}")
-    print("----- save end")
 
 
 def notify(message):
