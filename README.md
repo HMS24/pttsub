@@ -150,7 +150,7 @@ Parameters
 3. 打包成 image，遠端 run container
 
 使用 `1` 的方式可以導出 log 到 file 或者從 mail 追蹤 `/var/mail/$USER` cronjob 的 log。
-e,g, 將 `crontab` 改成 `*/10 * * * * python3 subscribe.py >> /tmp/cron_log.txt`。
+e.g. 將 `crontab` 改成 `*/10 * * * * python3 subscribe.py >> /tmp/cron_log.txt`。
 執行 `crontab crontab` 即可。但似乎不太方便，筆電會關機...
 
 `2` 則是在遠端機器上操作，除了 repo 的套件安裝需要手動外，另外像是機器也會需要安裝額外 packages(e.g. git, pipenv 之類)。
