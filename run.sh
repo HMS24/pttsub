@@ -28,9 +28,13 @@ echo "**********************************"
 echo "** Pushing image *****************"
 echo "**********************************"
 
-docker login -u $DOCKER_USER --password-stdin < ~/docker_pass
 docker tag $IMAGE:$TAG $DOCKER_USER/$IMAGE:$TAG
-docker push $DOCKER_USER/$IMAGE:$TAG
+
+if [ "$DEPLOY_PLACE" != "local" ];
+    then
+        docker login -u $DOCKER_USER --password-stdin < ~/docker_pass
+        docker push $DOCKER_USER/$IMAGE:$TAG
+fi
 
 # deploy
 echo "**********************************"
