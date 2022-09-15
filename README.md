@@ -1,6 +1,4 @@
 # pttsub
-ptt CarShop 最新賣車文通知
-
 
 ## 描述
 
