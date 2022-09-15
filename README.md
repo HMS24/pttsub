@@ -6,7 +6,7 @@ ptt CarShop 最新賣車文通知
 
 每十分鐘逛一下 CarShop 看板，若有新的售車文會發送 line 通知用戶。使用 python3 撰寫 另外 build 成 docker image，在 container 裡用 crontab 執行定期任務。實在不想每天開 ptt 看，有點累🥲。
 
-<p align="right">
+<p align="center">
 
 <img src="./assets/demo_image.jpg" alt="_" width="300"/>
 
