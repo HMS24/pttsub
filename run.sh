@@ -5,14 +5,29 @@ set -o pipefail
 
 DEPLOY_PLACE=$1
 
-# replace ********
-export DOCKER_USER=********
-export IMAGE=ptt_sub
-export TAG=********
-export SSH_PEM=********
+export SSH_PEM=$2
+export DOCKER_USER=${3:-"local"}
+export DOCKER_PASS=$4
+export IMAGE=${5:-"ptt_sub"}
+export TAG=${6:-"latest"}
 
 if [ -z "$DEPLOY_PLACE" ]; then
 	echo "DEPLOY_PLACE argument is required!"
+	exit 1
+fi
+
+if [ "$DEPLOY_PLACE" != "local" ] && [ -z "$SSH_PEM" ]; then
+	echo "SSH_PEM argument is required!"
+	exit 1
+fi
+
+if [ "$DEPLOY_PLACE" != "local" ] && [ "$DOCKER_USER" == "local" ]; then
+	echo "DOCKER_USER argument is required!"
+	exit 1
+fi
+
+if [ "$DEPLOY_PLACE" != "local" ] && [ -z "$DOCKER_PASS" ]; then
+	echo "DOCKER_PASS argument is required!"
 	exit 1
 fi
 
@@ -30,9 +45,11 @@ echo "**********************************"
 
 docker tag $IMAGE:$TAG $DOCKER_USER/$IMAGE:$TAG
 
-if [ "$DEPLOY_PLACE" != "local" ];
+if [ "$DEPLOY_PLACE" = "local" ];
     then
-        docker login -u $DOCKER_USER --password-stdin < ~/docker_pass
+        true
+    else
+        docker login -u $DOCKER_USER --password-stdin < $DOCKER_PASS
         docker push $DOCKER_USER/$IMAGE:$TAG
 fi
 
