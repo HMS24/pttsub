@@ -113,7 +113,8 @@ Parameters
 
 - 環境變數讀取不到
     > cron doesn't load your `bashrc` or `bash_profile` so any environment variables defined there are unavailable in your cron jobs
-    進到 running container 裡面從`/etc/init.d/cron` 設定檔看到某段
+
+    另外進到 running container 裡面從 `/etc/init.d/cron` 設定檔看到某段
     
     ```shell
         parse_environment ()
@@ -129,8 +130,8 @@ Parameters
     但安全性相當差，其他 user 或 service 可能會共用該份檔案，不過這是最快的解決方式了。[reference](https://stackoverflow.com/questions/2229825/where-can-i-set-environment-variables-that-crontab-will-use)
 
 - 針對描述的限制可以做的改變
-    1. 縮短 cronjob 執行時間
-    2. 精簡 notify 回傳的 message
+    - 縮短 cronjob 執行時間
+    - 精簡 notify 回傳的 message
 
 - [Cron job troubleshooting guide](https://cronitor.io/cron-reference/cron-troubleshooting-guide)
 ...
@@ -143,8 +144,9 @@ Parameters
 
 ### Ｗhy container？
 
+對於執行 module 可以
 1. 我的電腦 mac os 直接運行 cronjob
-2. 從遠端機器 git pull 操作
+2. 遠端機器 git pull 操作
 3. 打包成 image，遠端 run container
 
 使用 `1` 的方式可以導出 log 到 file 或者從 mail 追蹤 `/var/mail/$USER` cronjob 的 log。
@@ -168,8 +170,11 @@ git pull 的 權限，也是個問題。如果遇到 code 更新節奏快或 pac
 4. AWS Lambda 設定 event 及 rate
 
 `1` 只有一支 cronjob 要跑且蠻簡單的，較符合需求。但規模開始增加時不好管理。
+
 `2` 需要再 install package，增加套件相依性及管理上的成本(e.g. code, package version)。
+
 `3` 架設 airflow server 以 configuration as code 建造 ETL。看了一下有蠻多功能，可以 task 重跑也可以將 task 組合成不一樣的 ETL 流程，但似乎用不太到，反而得增加維護成本，讓整體開發效率下降...暫不考慮。
+
 `4` 以 cloud 的方式相對不熟。
 
 先以 `1` 快速開發。
