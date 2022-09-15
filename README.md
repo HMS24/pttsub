@@ -4,9 +4,9 @@ ptt CarShop 最新賣車文通知
 
 ## 描述
 
-每十分鐘逛一下 CarShop 看板，若有新的售車文會發送 line 通知用戶。使用 python3 撰寫 另外 build 成 docker image，在 container 裡使用 crontab 執行定期任務。實在不想每天開 ptt 看，有點累🥲。
+每十分鐘逛一下 CarShop 看板，若有新的售車文會發送 line 通知用戶。使用 python3 撰寫 另外 build 成 docker image，在 container 裡用 crontab 執行定期任務。實在不想每天開 ptt 看，有點累🥲。
 
-<img src="./assets/demo_image.jpg" alt="_" width="200"/>
+<img src="./assets/demo_image.jpg" alt="_" width="300"/>
 </p>
 
 **限制 1: 目前僅抓取該板第一頁的 20 則**，如果在排程的間隔時間內，發文超過 20 則，會有某些文沒抓到。
@@ -150,11 +150,11 @@ Parameters
 3. 打包成 image，遠端 run container
 
 使用 `1` 的方式可以導出 log 到 file 或者從 mail 追蹤 `/var/mail/$USER` cronjob 的 log。
-e,g, `crontab`。`*/10 * * * * python3 subscribe.py >> /tmp/cron_log.txt`。
+e,g, 將 `crontab` 改成 `*/10 * * * * python3 subscribe.py >> /tmp/cron_log.txt`。
 執行 `crontab crontab` 即可。但似乎不太方便，筆電會關機...
 
 `2` 則是在遠端機器上操作，除了 repo 的套件安裝需要手動外，另外像是機器也會需要安裝額外 packages(e.g. git, pipenv 之類)。
-git pull 的 權限，也是個問題。如果遇到 code 更新節奏快或 packages 需要調整就會相對麻煩。
+還有 git 的 權限，也是個問題。如果遇到 code 更新節奏快或 packages 需要調整就會相對麻煩。
 
 `3` 比較簡單，版本管控也比較單純。但 cron 是屬於系統服務，需要以 root 身份執行，感覺安全性很不足。
 另外就是原本的環境變數都不會 load into cronjob，有點 tricky。
