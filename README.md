@@ -83,9 +83,8 @@ Parameters
 - `boot.sh`: container 啟動後的 entrypoint，執行 cron 的 script，使之在前景(foreground)執行。
 - `subscribe.py`: 主要 module，小規模放在一個 module 裡，若未來還有其他需要訂閱的看板，則需要把 `fetch, parse` 等函式功能拆開。
     e.g. `subscribe_CarShop.py` + `subscribe_home-sale.py` + `fetch.py` + `parse.py`
-- `build`
-    - `build.sh`: 使用 docker cli plugin 可以指定特定 platform (linux/amd64)，與要部署的遠端機器 OS 一致。
-    - `crontab`: crontab 指令，將 log 導向 stdout 及 stderr。
+- `build/build.sh`: 使用 docker cli plugin 可以指定特定 platform (linux/amd64)，與要部署的遠端機器 OS 一致。
+- `build/crontab`: crontab 指令，將 log 導向 stdout 及 stderr。
 
 `subscribe.py` 流程:
 
