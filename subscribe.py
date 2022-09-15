@@ -7,12 +7,21 @@ id example: M.1663077961.A.6CD
 """
 
 import os
+import logging
 from functools import reduce
 
 from dotenv import load_dotenv
 from requests_html import HTMLSession
 
 load_dotenv()
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)10.19s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler()],
+)
+
+logger = logging.getLogger()
 session = HTMLSession()
 
 BASE_URL = "https://www.ptt.cc"
@@ -134,7 +143,7 @@ def main():
 
     # 判斷是否有新發文
     if latest_id == last_id:
-        print(f"***** it seems that doesn't have new articles *****")
+        logger.info(f"***** it seems that doesn't have new articles *****")
         return
 
     save(latest_info)
@@ -149,8 +158,8 @@ def main():
     resp = notify(message)
 
     if resp.status_code != 200:
-        print(f"***** Notify failed *****")
-    print(f"***** Notify succeed *****")
+        logger.info(f"***** Notify failed *****")
+    logger.info(f"***** Notify succeed *****")
 
 
 if __name__ == "__main__":
