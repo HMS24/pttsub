@@ -7,7 +7,7 @@ COPY requirements.txt requirements.txt
 RUN python3 -m venv venv
 RUN venv/bin/pip3 install -r requirements.txt
 
-COPY --chmod=644 crontab /etc/cron.d/crontab
+COPY --chmod=644 ./build/crontab /etc/cron.d/crontab
 COPY subscribe.py boot.sh ./
 
 RUN /usr/bin/crontab /etc/cron.d/crontab
