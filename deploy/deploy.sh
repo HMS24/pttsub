@@ -8,7 +8,7 @@ REMOTE_MACHINE=$1
 echo "$IMAGE" > /tmp/.auth
 echo "$TAG" >> /tmp/.auth
 echo "$DOCKER_USER" >> /tmp/.auth
-cat ~/docker_pass >> /tmp/.auth
+cat $DOCKER_PASS >> /tmp/.auth
 
 scp -i $SSH_PEM /tmp/.auth $REMOTE_MACHINE:/tmp/.auth
 scp -i $SSH_PEM ./deploy/publish.sh $REMOTE_MACHINE:/tmp/publish.sh
