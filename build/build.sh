@@ -3,6 +3,8 @@
 set -xe
 set -o pipefail
 
+IMAGE=$1
+TAG=$2
 DOCKERFILE_DIR_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # build docker image
