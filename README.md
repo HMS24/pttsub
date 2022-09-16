@@ -44,17 +44,17 @@
 
 建立映像檔及部署，預設映像檔名稱:`$DOCKER_USER/$IMAGE:$TAG`
 
-    $ ./run.sh $REMOTE_MACHINE \
-               $REMOTE_MACHINE_PEM_PATH \
-               $DOCKER_USER \
-               $DOCKER_PASSWORD_PATH \
-               $IMAGE \
-               $TAG
+    $ ./run.sh --target $REMOTE_MACHINE \
+               --ssh-pem $REMOTE_MACHINE_PEM_PATH \
+               --docker-user $DOCKER_USER \
+               --docker-pass $DOCKER_PASSWORD_PATH \
+               --image $IMAGE \
+               --tag $TAG
 Parameters
 - `REMOTE_MACHINE`: 遠端機器 (user@hostname)
-- `REMOTE_MACHINE_PEM_PATH`: pem 檔案位置 ("HOME/***.pem")
+- `REMOTE_MACHINE_PEM_PATH`: pem 檔案位置 ("$HOME/***.pem")
 - `DOCKER_USER`: docker 使用者
-- `DOCKER_PASSWORD_PATH` docker 密碼檔案位置 ("HOME/***")
+- `DOCKER_PASSWORD_PATH` docker 密碼檔案位置 ("$HOME/***")
 - `IMAGE`(optional): 映像檔名稱
 - `TAG`(optional) 映像檔 tag
 
