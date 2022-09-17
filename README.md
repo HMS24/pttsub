@@ -100,7 +100,7 @@ Parameters
 ### 流程圖 - `subscribe.py`
 
 <p align="center">
-<img src="./assets/asubscribe_flowll.jpeg" alt="all" width="1680"/>
+<img src="./assets/subscribe_flow.jpeg" alt="all" width="1680"/>
 </p>
 
 ### 流程說明 - `subscribe.py`
