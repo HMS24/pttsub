@@ -13,7 +13,7 @@
 
 **限制 2: 另外是 Line notify 的[訊息字元上限 1000](https://notify-bot.line.me/doc/en/)**，太多則後面幾篇文標題會被截斷。
 
-- 針對描述的限制可以做的改變
+針對描述的限制可以做的改變
     - 縮短 cronjob 執行時間
     - 精簡 notify 回傳的 message
 
@@ -88,7 +88,7 @@ Parameters
 └── run.sh                  # 執行 build and deploy 的 script
 ```
 
-說明：
+### modules 說明
 
 - `boot.sh`: 執行 cron 的 script，使之在前景(foreground)執行。
 - `subscribe.py`: 小規模放在一個 module 裡，若未來還有其他需要訂閱的看板，則需要把 `fetch, parse` 等函式功能拆開。
@@ -96,7 +96,13 @@ Parameters
     - `build.sh`: 使用 docker cli plugin 可以指定特定 platform (linux/amd64)，與要部署的遠端機器 OS 一致，減少出錯。
     - `crontab`: crontab 指令，並將 log 導向 stdout 及 stderr。
 
-`subscribe.py` 流程:
+### 流程圖 - `subscribe.py`
+
+<p align="center">
+<img src="./assets/asubscribe_flowll.jpeg" alt="all" width="1680"/>
+</p>
+
+### 流程說明 - `subscribe.py`
 
     - fetch
     - parse
@@ -108,7 +114,7 @@ Parameters
             - 切割 fetched[ 0:上一次紀錄的最新文章 index ]
             - Line 通知
 
-`run.sh` 流程:
+### 流程說明 - `run.sh`
 
     - build
         - 安裝 packages
@@ -120,6 +126,7 @@ Parameters
     - publish
         - pull image
         - run container
+
 
 ## 預計工作
 - 過濾廠牌及預算，甚至是推文數及推噓等資訊。
@@ -145,10 +152,5 @@ Parameters
     因此在 `boot.sh` 將環境變數導入 `printenv > /etc/environment`。
     但安全性相當差，其他 user 或 service 可能會共用該份檔案，不過這是最快的解決方式了。[reference](https://stackoverflow.com/questions/2229825/where-can-i-set-environment-variables-that-crontab-will-use)
 
-- 針對描述的限制可以做的改變
-    - 縮短 cronjob 執行時間
-    - 精簡 notify 回傳的 message
-...
-
 ## 一些思考
-關於部署、排程及專案初始草稿在 [note.md](https://github.com/HMS24/ptsub/blob/master/assets/note.md)
+關於部署、排程及專案初始草稿在 [note.md](https://github.com/HMS24/pttsub/blob/master/assets/note.md)
