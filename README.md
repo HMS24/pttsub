@@ -14,10 +14,9 @@
 **限制 2: 另外是 Line notify 的[訊息字元上限 1000](https://notify-bot.line.me/doc/en/)**，太多則後面幾篇文標題會被截斷。
 
 針對描述的限制可以做的改變
+- 縮短 cronjob 執行時間
 
-    - 縮短 cronjob 執行時間
-
-    - 精簡 notify 回傳的 message
+- 精簡 notify 回傳的 message
 
 ## 如何使用
 ### 開發 (使用 pipenv)
