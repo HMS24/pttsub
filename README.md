@@ -19,10 +19,9 @@
 - 精簡 notify 回傳的 message
 
 ## 如何使用
-### 開發 (使用 pipenv)
+### 開發
 
-    $ pipenv install
-    $ pipenv shell
+    $ pip3 install -r requirements.txt
     $ python3 subscribe.py
 
 ### 部署前置作業
