@@ -44,6 +44,7 @@ e.g. 將 `crontab` 改成 `*/10 * * * * python3 subscribe.py >> /tmp/cron_log.tx
     $ crontab -r  清除所有
 
 ## 草稿
+
 - fetch
     - source: 
         取得 ptt CarShop 版的**售車**標題網頁
@@ -91,5 +92,73 @@ e.g. 將 `crontab` 改成 `*/10 * * * * python3 subscribe.py >> /tmp/cron_log.tx
     - build docker image
     - run on ec2
 
+## 關於 modules
+
+- `boot.sh`: 執行 cron 的 script，使之在前景(foreground)執行。
+- `subscribe.py`: 小規模放在一個 module 裡，若未來還有其他需要訂閱的看板，則需要把 `fetch, parse` 等函式功能拆開。
+- build
+    - `build.sh`: 使用 docker cli plugin 可以指定特定 platform (linux/amd64)，與要部署的遠端機器 OS 一致，減少出錯。
+    - `crontab`: crontab 指令，並將 log 導向 stdout 及 stderr。
+
+## 關於流程
+
+### 流程圖 - `subscribe.py`
+
+<p align="center">
+<img src="./subscribe_flow.jpeg" alt="all" width="800"/>
+</p>
+
+### 流程說明 - `subscribe.py`
+
+    - fetch
+    - parse
+    - 從 cache.txt 取得上次最新文章的 id
+    - 與 fetched 的最新文章比較
+        - 相同 return
+        - 不同
+            - save 最新文章 id
+            - 切割 fetched[ 0:上一次紀錄的最新文章 index ]
+            - Line 通知
+
+### 流程說明 - `run.sh`
+
+    - build
+        - 安裝 packages
+        - 設定 crontab and run
+    - push
+        - 推到 docker hub
+    - deploy
+        - 傳送 compose.yml、publish.sh 及相關 variables
+    - publish
+        - pull image
+        - run container
+
+
+## 關於 TODO
+
+- 過濾廠牌及預算，甚至是推文數及推噓等資訊。
+- 訂閱其他看板
+
+## 關於問題
+
+- 環境變數讀取不到
+    > cron doesn't load your `bashrc` or `bash_profile` so any environment variables defined there are unavailable in your cron jobs
+
+    另外進到 running container 裡面從 `/etc/init.d/cron` 設定檔看到某段
+    
+    ```shell
+        parse_environment ()
+        {
+            for ENV_FILE in /etc/environment /etc/default/locale; do
+                [ -r "$ENV_FILE" ] || continue
+                [ -s "$ENV_FILE" ] || continue
+        ...
+        以下省略
+    ```
+    可以清楚看到 cronjob 啟動時會 load `/etc/environment`。
+    因此在 `boot.sh` 將環境變數導入 `printenv > /etc/environment`。
+    但安全性相當差，其他 user 或 service 可能會共用該份檔案，不過這是最快的解決方式了。[reference](https://stackoverflow.com/questions/2229825/where-can-i-set-environment-variables-that-crontab-will-use)
+
 ## 參考資源
+
 - [Cron job troubleshooting guide](https://cronitor.io/cron-reference/cron-troubleshooting-guide)
